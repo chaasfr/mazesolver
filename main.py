@@ -1,6 +1,4 @@
-from window import Window
-from line import Line
-from point import Point
+from graphics import Window, Line, Point
 
 def draw_lines(win=Window):
     p1 = Point(400,200)
