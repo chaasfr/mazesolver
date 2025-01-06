@@ -1,5 +1,5 @@
 from graphics import Window, Line, Point
-from maze import Cell
+from maze import Cell,Maze
 
 def draw_lines(win:Window):
     p1 = Point(400,200)
@@ -61,7 +61,7 @@ def draw_all_types_cells(win:Window):
 
 def draw_3_cells(win:Window):
       cells = []
-      cell1 = Cell(200,250,200,250,win,True,True,True)
+      cell1 = Cell(200,250,200,250,win,True,True,True, False)
       cells.append(cell1)
 
       cell2 = Cell(200,250,250,300,win,True,False,False,True)
@@ -76,13 +76,16 @@ def draw_3_cells(win:Window):
       cell1.draw_move(cell2)
       cell2.draw_move(cell3)
       cell2.draw_move(cell1, True)
-   
+
+def draw_maze(win:Window):
+      maze = Maze( 50,50,10,15,50,50,win)
 
 def main():
    win = Window(800, 600)
    #draw_lines(win)
    #draw_all_types_cells(win)
-   draw_3_cells(win)
+   #draw_3_cells(win)
+   draw_maze(win)
    win.wait_for_close() 
 
 if __name__ == "__main__":

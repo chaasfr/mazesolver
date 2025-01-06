@@ -1,10 +1,11 @@
 from graphics import Window, Point, Line
+import time
 
 
 class Cell():
     def __init__(self,x1,x2,y1,y2,window:Window,
-                 has_left_wall=False, has_right_wall=False,
-                 has_top_wall=False, has_bottom_wall=False,
+                 has_left_wall=True, has_right_wall=True,
+                 has_top_wall=True, has_bottom_wall=True,
                  ):
         self._x1 = min(x1, x2)
         self._x2 = max(x1, x2)
@@ -55,3 +56,38 @@ y1: {self._y1}, y2: {self._y2},
         {self.has_top_wall}
 {self.has_left_wall}   {self.center}     {self.has_right_wall}
         {self.has_bottom_wall}"""
+    
+
+class Maze():
+    def __init__(self, x1, y1,
+        num_rows, num_cols,
+        cell_size_x, cell_size_y,
+        win):  
+        self._x1 = x1
+        self._y1 = y1
+        self._num_rows = num_rows
+        self._num_cols = num_cols
+        self._cell_size_x = cell_size_x
+        self._cell_size_y = cell_size_y
+        self._win = win
+        self._cells = []
+        self._create_cells()
+
+    def _create_cells(self):
+        for i in range(self._num_cols):
+            col = []
+            for j in range(self._num_rows):
+                x = self._x1 + j*self._cell_size_x
+                y = self._y1 + i*self._cell_size_y
+                cell = Cell(x, x + self._cell_size_x, 
+                            y, y +self._cell_size_y,
+                            self._win)
+                col.append(cell)
+                cell.draw()
+                self._animate()
+
+            self._cells.append(col)
+ 
+    def _animate(self):
+        self._win.redraw()
+        time.sleep(0.05)
