@@ -1,7 +1,7 @@
 from graphics import Window, Line, Point
 from maze import Cell
 
-def draw_lines(win=Window):
+def draw_lines(win:Window):
     p1 = Point(400,200)
     p2 = Point(400,400)
 
@@ -20,7 +20,7 @@ def draw_lines(win=Window):
     win.draw_line(line2, color="red")
     win.draw_line(line3, color="black")
 
-def draw_cells(win=Window):
+def draw_cells(win:Window):
    x_min = 50
    x_max = 750
    y_min = 50

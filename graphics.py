@@ -6,11 +6,11 @@ class Point():
       self.y = y
       
 class Line():
-    def __init__(self, point_1=Point, point_2=Point):
+    def __init__(self, point_1:Point, point_2:Point):
         self.p1 = point_1
         self.p2 = point_2
 
-    def draw(self, canvas=Canvas, color=str):
+    def draw(self, canvas:Canvas, color="black"):
         canvas.create_line(
             self.p1.x, self.p1.y,
             self.p2.x, self.p2.y,
@@ -38,5 +38,5 @@ class Window():
     def close(self):
         self.__is_running = False
 
-    def draw_line(self,line=Line, color=str):
+    def draw_line(self,line:Line, color:str):
         line.draw(canvas=self.canvas,color=color)
