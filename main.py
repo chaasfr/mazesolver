@@ -20,7 +20,7 @@ def draw_lines(win:Window):
     win.draw_line(line2, color="red")
     win.draw_line(line3, color="black")
 
-def draw_cells(win:Window):
+def draw_all_types_cells(win:Window):
    x_min = 50
    x_max = 750
    y_min = 50
@@ -51,7 +51,6 @@ def draw_cells(win:Window):
                    has_right_wall=has_right_wall,
                    has_bottom_wall=has_bottom_wall,
                    has_top_wall=has_top_wall)
-       print(cell)
        cell.draw()
        i += 1
        if x_max - x2 > cell_width + space:
@@ -60,12 +59,30 @@ def draw_cells(win:Window):
            col = 1
            row += 1
 
+def draw_3_cells(win:Window):
+      cells = []
+      cell1 = Cell(200,250,200,250,win,True,True,True)
+      cells.append(cell1)
 
+      cell2 = Cell(200,250,250,300,win,True,False,False,True)
+      cells.append(cell2)
+
+      cell3 = Cell(250,300,250,300,win,False,True,True,True)
+      cells.append(cell3)
+
+      for cell in cells:
+        cell.draw()
+
+      cell1.draw_move(cell2)
+      cell2.draw_move(cell3)
+      cell2.draw_move(cell1, True)
+   
 
 def main():
    win = Window(800, 600)
    #draw_lines(win)
-   draw_cells(win)
+   #draw_all_types_cells(win)
+   draw_3_cells(win)
    win.wait_for_close() 
 
 if __name__ == "__main__":

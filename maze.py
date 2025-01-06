@@ -15,6 +15,8 @@ class Cell():
         self.has_right_wall = has_right_wall
         self.has_top_wall = has_top_wall
         self.has_bottom_wall = has_bottom_wall
+        self.center = Point( (self._x1 + self._x2)/2,
+                                (self._y1 + self._y2)/2)
 
     def draw(self):
         top_left = Point(self._x1, self._y1)
@@ -38,11 +40,18 @@ class Cell():
             bottom_line = Line(bottom_left, bottom_right)
             bottom_line.draw(self._win.canvas, color="black")
 
+    def draw_move(self, to_cell, undo=False):
+            color = "gray" if undo else "red"
+            origin = to_cell if undo else self
+            dest = self if undo else to_cell
+            
+            line = Line(origin.center, dest.center)
+            line.draw(self._win.canvas,color)
 
 
     def __repr__(self):
         return f"""x1: {self._x1}, x2: {self._x2},
 y1: {self._y1}, y2: {self._y2},
         {self.has_top_wall}
-{self.has_left_wall}        {self.has_right_wall}
+{self.has_left_wall}   {self.center}     {self.has_right_wall}
         {self.has_bottom_wall}"""
