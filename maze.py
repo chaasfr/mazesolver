@@ -81,13 +81,13 @@ class Maze():
             random.seed(seed)
         self._break_walls_r(self._cells[0][0])
 
-        for cell in self._cells:
-            print(cell)
+        self._reset_cells_visited()
+
 
     def _create_cells(self):
-        for i in range(self._num_rows):
+        for i in range(self._num_cols):
             col = []
-            for j in range(self._num_cols):
+            for j in range(self._num_rows):
                 x = self._x1 + j*self._cell_size_x
                 y = self._y1 + i*self._cell_size_y
                 cell = Cell(x, x + self._cell_size_x, 
@@ -124,11 +124,11 @@ class Maze():
         j = cell.j
         if i > 0:
             result.append(self._cells[i-1][j])
-        if i < self._num_rows-1:
+        if i < self._num_cols-1:
             result.append(self._cells[i+1][j])
         if j > 0:
             result.append(self._cells[i][j-1])
-        if j < self._num_cols-1:
+        if j < self._num_rows-1:
             result.append(self._cells[i][j+1])
         return list(filter(lambda x: not x.visited,result))
 
@@ -166,4 +166,7 @@ class Maze():
                 self.__break_walls_between_cells(current_cell, new_cell)
                 self._break_walls_r(new_cell)                
 
-    
+    def _reset_cells_visited(self):
+        for col in self._cells:
+            for cell in col:
+                cell.visited = False
