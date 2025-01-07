@@ -44,7 +44,7 @@ class Cell():
         bottom_line.draw(self._win.canvas, color=bottom_color)
 
     def draw_move(self, to_cell, undo=False):
-            color = "gray" if undo else "red"
+            color = "yellow" if undo else "red"
             origin = to_cell if undo else self
             dest = self if undo else to_cell
             
@@ -78,6 +78,7 @@ class Maze():
         self._break_entrance_and_exit()
 
         if seed:
+            print(f"using seed {seed}")
             random.seed(seed)
         self._break_walls_r(self._cells[0][0])
 
@@ -88,8 +89,8 @@ class Maze():
         for i in range(self._num_cols):
             col = []
             for j in range(self._num_rows):
-                x = self._x1 + j*self._cell_size_x
-                y = self._y1 + i*self._cell_size_y
+                x = self._x1 + i*self._cell_size_x
+                y = self._y1 + j*self._cell_size_y
                 cell = Cell(x, x + self._cell_size_x, 
                             y, y +self._cell_size_y,
                             self._win,i,j)
@@ -106,7 +107,7 @@ class Maze():
     def _animate(self, slow_mode=False):
         self._win.redraw()
         if slow_mode:
-            time.sleep(0.05)
+            time.sleep(0.01)
 
     def _break_entrance_and_exit(self):
         tl_cell = self._cells[0][0]
@@ -136,23 +137,23 @@ class Maze():
         return list.pop(random.randrange(0,len(list)))
     
     def __break_walls_between_cells(self, cell, neighbor):
-        if neighbor.j < cell.j:
+        if neighbor.i < cell.i:
             cell.has_left_wall = False
             neighbor.has_right_wall = False
-        elif neighbor.j > cell.j:
+        elif neighbor.i > cell.i:
             cell.has_right_wall = False
             neighbor.has_left_wall = False
-        elif neighbor.i < cell.i:
+        elif neighbor.j < cell.j:
             cell.has_top_wall = False
             neighbor.has_bottom_wall = False
-        elif neighbor.i > cell.i:
+        elif neighbor.j > cell.j:
             cell.has_bottom_wall = False
             neighbor.has_top_wall = False
         else:
             raise Exception(
                 f"not neighbor: {(cell.i, cell.j)} and {(neighbor.i, neighbor.j)}")
-        self._draw_cell(cell,True)
-        self._draw_cell(neighbor, True)
+        self._draw_cell(cell)
+        self._draw_cell(neighbor)
 
     def _break_walls_r(self, current_cell):
         current_cell.visited = True
@@ -170,3 +171,69 @@ class Maze():
         for col in self._cells:
             for cell in col:
                 cell.visited = False
+
+    def solve(self):
+        return self._solve_r(self._cells[0][0])
+    
+    def _current_cell_is_goal(self,current_cell):
+        return current_cell.i == self._num_cols -1 and current_cell.j == self._num_rows-1
+
+    def _can_move_left_from_cell(self, cell):
+        return (cell.i > 0 
+                and not cell.has_left_wall
+                and not self._cells[cell.i-1][cell.j].visited)
+    
+    def _can_move_right_from_cell(self, cell):
+        return (cell.i < self._num_cols-1 
+                and not cell.has_right_wall
+                and not self._cells[cell.i+1][cell.j].visited)
+    
+    def _can_move_top_from_cell(self, cell):
+        return (cell.j > 0 
+                and not cell.has_top_wall
+                and not self._cells[cell.i][cell.j-1].visited)
+
+    def _can_move_bottom_from_cell(self, cell):
+        return (cell.j < self._num_rows-1 
+                and not cell.has_bottom_wall
+                and not self._cells[cell.i][cell.j+1].visited)
+
+    def _solve_r(self, current_cell):
+        self._animate(slow_mode=True)
+        current_cell.visited = True
+        if self._current_cell_is_goal(current_cell):
+            return True
+        
+        if self._can_move_left_from_cell(current_cell):
+            new_cell = self._cells[current_cell.i-1][current_cell.j]
+            current_cell.draw_move(new_cell)
+            if self._solve_r(new_cell):
+                return True
+            else:
+                current_cell.draw_move(new_cell, undo=True)
+        
+        if self._can_move_right_from_cell(current_cell):
+            new_cell = self._cells[current_cell.i+1][current_cell.j]
+            current_cell.draw_move(new_cell)
+            if self._solve_r(new_cell):
+                return True
+            else:
+                current_cell.draw_move(new_cell, undo=True)
+
+        if self._can_move_top_from_cell(current_cell):
+            new_cell = self._cells[current_cell.i][current_cell.j-1]
+            current_cell.draw_move(new_cell)
+            if self._solve_r(new_cell):
+                return True
+            else:
+                current_cell.draw_move(new_cell, undo=True)
+
+        if self._can_move_bottom_from_cell(current_cell):
+            new_cell = self._cells[current_cell.i][current_cell.j+1]
+            current_cell.draw_move(new_cell)
+            if self._solve_r(new_cell):
+                return True
+            else:
+                current_cell.draw_move(new_cell, undo=True)
+        
+        return False

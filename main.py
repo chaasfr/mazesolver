@@ -78,14 +78,17 @@ def draw_3_cells(win:Window):
       cell2.draw_move(cell1, True)
 
 def draw_maze(win:Window):
-      maze = Maze( 50,50,10,8,50,50,win)
+      maze = Maze( 50,50,30,30,30,30,win)
+      return maze
 
 def main():
-   win = Window(800, 600)
+   win = Window(1600, 1400)
    #draw_lines(win)
    #draw_all_types_cells(win)
    #draw_3_cells(win)
-   draw_maze(win)
+   maze = draw_maze(win)
+   maze.solve()
+
    win.wait_for_close() 
 
 if __name__ == "__main__":
