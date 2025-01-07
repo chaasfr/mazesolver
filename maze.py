@@ -25,21 +25,20 @@ class Cell():
         bottom_left = Point(self._x1, self._y2)
         bottom_right = Point(self._x2, self._y2)
 
-        if self.has_left_wall:
-            left_line = Line(top_left, bottom_left)
-            left_line.draw(self._win.canvas, color="black")
+        left_line = Line(top_left, bottom_left)
+        right_line = Line(top_right, bottom_right)
+        top_line = Line(top_left, top_right)
+        bottom_line = Line(bottom_left, bottom_right)
 
-        if self.has_right_wall:
-            right_line = Line(top_right, bottom_right)
-            right_line.draw(self._win.canvas, color="black")
+        left_color = "black" if self.has_left_wall else "#d9d9d9"
+        right_color = "black" if self.has_right_wall else "#d9d9d9"
+        top_color = "black" if self.has_top_wall else "#d9d9d9"
+        bottom_color = "black" if self.has_bottom_wall else "#d9d9d9"
 
-        if self.has_top_wall:
-            top_line = Line(top_left, top_right)
-            top_line.draw(self._win.canvas, color="black")
-
-        if self.has_bottom_wall:
-            bottom_line = Line(bottom_left, bottom_right)
-            bottom_line.draw(self._win.canvas, color="black")
+        left_line.draw(self._win.canvas, color=left_color)
+        right_line.draw(self._win.canvas, color=right_color)
+        top_line.draw(self._win.canvas, color=top_color)
+        bottom_line.draw(self._win.canvas, color=bottom_color)
 
     def draw_move(self, to_cell, undo=False):
             color = "gray" if undo else "red"
@@ -72,6 +71,7 @@ class Maze():
         self._win = win
         self._cells = []
         self._create_cells()
+        self._break_entrance_and_exit()
 
     def _create_cells(self):
         for i in range(self._num_cols):
@@ -83,12 +83,25 @@ class Maze():
                             y, y +self._cell_size_y,
                             self._win)
                 col.append(cell)
-                if self._win:
-                    cell.draw()
-                    self._animate()
+                self._draw_cell(cell)
 
             self._cells.append(col)
  
+    def _draw_cell(self,cell):
+        if self._win:
+            cell.draw()
+            self._animate()
+
     def _animate(self):
         self._win.redraw()
         time.sleep(0.05)
+
+    def _break_entrance_and_exit(self):
+        tl_cell = self._cells[0][0]
+        br_cell = self._cells[-1][-1]
+
+        tl_cell.has_top_wall = False
+        br_cell.has_bottom_wall = False
+
+        self._draw_cell(tl_cell)
+        self._draw_cell(br_cell)

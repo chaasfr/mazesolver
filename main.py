@@ -78,7 +78,7 @@ def draw_3_cells(win:Window):
       cell2.draw_move(cell1, True)
 
 def draw_maze(win:Window):
-      maze = Maze( 50,50,10,15,50,50,win)
+      maze = Maze( 50,50,10,6,50,50,win)
 
 def main():
    win = Window(800, 600)
